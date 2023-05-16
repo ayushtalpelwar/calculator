@@ -18,6 +18,8 @@ class CalculatorApp extends StatefulWidget {
 class _CalculatorAppState extends State<CalculatorApp> {
   var input='';
   var output='';
+  var hideinput=false;
+  var outputsize=34.0;
 
   onButtonClick(value){
     if(value=="AC"){
@@ -25,19 +27,27 @@ class _CalculatorAppState extends State<CalculatorApp> {
       output='';
     }
     else if(value=="<"){
-      input=input.substring(0,input.length-1);
+      if(input.isNotEmpty) {
+        input = input.substring(0, input.length - 1);
+      }
     }
     else if(value=="="){
-      var userinput=input;
-      userinput=input.replaceAll("x","*");
-      Parser p = Parser();
-      Expression expression=p.parse(userinput);
-      ContextModel cm=ContextModel();
-      var result=expression.evaluate(EvaluationType.REAL, cm);
-      output=result.toString();
+      if(input.isNotEmpty) {
+        var userinput = input;
+        userinput = input.replaceAll("x", "*");
+        Parser p = Parser();
+        Expression expression = p.parse(userinput);
+        ContextModel cm = ContextModel();
+        var result = expression.evaluate(EvaluationType.REAL, cm);
+        output = result.toString();
+        hideinput=true;
+        outputsize=54.0;
+      }
     }
     else{
       input=input+value;
+      hideinput=false;
+      outputsize=34.0;
     }
     setState(() {
 
@@ -60,13 +70,13 @@ class _CalculatorAppState extends State<CalculatorApp> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    input,
+                    hideinput?" ":input,
                     style: TextStyle(fontSize: 48, color: Colors.white),
                   ),
                   SizedBox(height: 20),
                   Text(
                     output,
-                    style: TextStyle(fontSize: 30, color: Colors.white.withOpacity(0.7)),
+                    style: TextStyle(fontSize: outputsize, color: Colors.white.withOpacity(0.7)),
                   ),
                   SizedBox(height: 30),
                 ],
